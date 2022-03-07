@@ -184,31 +184,27 @@ if __name__ == '__main__':
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
 
-    model.cuda()
-    model = nn.DataParallel(model)
-
-    # optimizer prepare
     if Config.use_backbone:
-        ignored_params = list(map(id, model.module.classifier.parameters()))
+        ignored_params = list(map(id, model.classifier.parameters()))
     else:
-        ignored_params1 = list(map(id, model.module.classifier.parameters()))
-        ignored_params2 = list(map(id, model.module.classifier_swap.parameters()))
-        ignored_params3 = list(map(id, model.module.Convmask.parameters()))
+        ignored_params1 = list(map(id, model.classifier.parameters()))
+        ignored_params2 = list(map(id, model.classifier_swap.parameters()))
+        ignored_params3 = list(map(id, model.Convmask.parameters()))
 
         ignored_params = ignored_params1 + ignored_params2 + ignored_params3
     print('the num of new layers:', len(ignored_params), flush=True)
-    base_params = filter(lambda p: id(p) not in ignored_params, model.module.parameters())
+    base_params = filter(lambda p: id(p) not in ignored_params, model.parameters())
 
     lr_ratio = args.cls_lr_ratio
     base_lr = args.base_lr
     if Config.use_backbone:
         optimizer = optim.SGD([{'params': base_params},
-                               {'params': model.module.classifier.parameters(), 'lr': base_lr}], lr = base_lr, momentum=0.9)
+                               {'params': model.classifier.parameters(), 'lr': base_lr}], lr = base_lr, momentum=0.9)
     else:
         optimizer = optim.SGD([{'params': base_params},
-                               {'params': model.module.classifier.parameters(), 'lr': lr_ratio*base_lr},
-                               {'params': model.module.classifier_swap.parameters(), 'lr': lr_ratio*base_lr},
-                               {'params': model.module.Convmask.parameters(), 'lr': lr_ratio*base_lr},
+                               {'params': model.classifier.parameters(), 'lr': lr_ratio*base_lr},
+                               {'params': model.classifier_swap.parameters(), 'lr': lr_ratio*base_lr},
+                               {'params': model.Convmask.parameters(), 'lr': lr_ratio*base_lr},
                               ], lr = base_lr, momentum=0.9)
 
 

@@ -86,7 +86,7 @@ class dataset(data.Dataset):
                 label_swap = label + self.numcls
             if self.use_cls_2:
                 label_swap = -1
-            img_unswap = self.totensor(img_unswap)
+            img_unswap = self.totensor(img_unswap) # 返回的是是否swap的图片内容，真实label, fake label(label+4), 未swap秩序, swap秩序, 图片路径
             return img_unswap, img_swap, label, label_swap, swap_law1, swap_law2, self.paths[item]
         else:
             label = self.labels[item]
@@ -109,7 +109,6 @@ class dataset(data.Dataset):
             for i in range(len(crop_x) - 1):
                 im_list.append(image.crop((crop_x[i], crop_y[j], min(crop_x[i + 1], width), min(crop_y[j + 1], high))))
         return im_list
-
 
     def get_weighted_sampler(self):
         img_nums = len(self.labels)

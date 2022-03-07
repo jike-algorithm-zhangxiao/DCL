@@ -6,7 +6,7 @@ from transforms import transforms
 from utils.autoaugment import ImageNetPolicy
 
 # pretrained model checkpoints
-pretrained_model = {'resnet50' : './models/pretrained/resnet50-19c8e357.pth',}
+pretrained_model = {'resnet50' : '/Users/zhangxiao/Downloads/resnet50-19c8e357.pth',}
 
 # transforms dict
 def load_data_transformers(resize_reso=512, crop_reso=448, swap_num=[7, 7]):
@@ -69,9 +69,9 @@ class LoadConfig(object):
             self.numcls = 2019
         elif args.dataset == 'CUB':
             self.dataset = args.dataset
-            self.rawdata_root = './dataset/CUB_200_2011/data'
-            self.anno_root = './dataset/CUB_200_2011/anno'
-            self.numcls = 200
+            self.rawdata_root = '/Users/zhangxiao/PycharmProjects/DCL/datasets/CUB_200_2011/data'
+            self.anno_root = '/Users/zhangxiao/PycharmProjects/DCL/datasets/CUB_200_2011/anno'
+            self.numcls = 4
         elif args.dataset == 'STCAR':
             self.dataset = args.dataset
             self.rawdata_root = './dataset/st_car/data'

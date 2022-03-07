@@ -75,10 +75,10 @@ def train(Config,
             if Config.use_dcl:
                 inputs, labels, labels_swap, swap_law, img_names = data
 
-                inputs = Variable(inputs.cuda())
-                labels = Variable(torch.from_numpy(np.array(labels)).cuda())
-                labels_swap = Variable(torch.from_numpy(np.array(labels_swap)).cuda())
-                swap_law = Variable(torch.from_numpy(np.array(swap_law)).float().cuda())
+                inputs = Variable(inputs)
+                labels = Variable(torch.from_numpy(np.array(labels)))
+                labels_swap = Variable(torch.from_numpy(np.array(labels_swap)))
+                swap_law = Variable(torch.from_numpy(np.array(swap_law)).float())
 
             optimizer.zero_grad()
 
@@ -112,10 +112,10 @@ def train(Config,
                 loss += law_loss
 
             loss.backward()
-            torch.cuda.synchronize()
+            # torch.cuda.synchronize()
 
             optimizer.step()
-            torch.cuda.synchronize()
+            # torch.cuda.synchronize()
 
             if Config.use_dcl:
                 print('step: {:-8d} / {:d} loss=ce_loss+swap_loss+law_loss: {:6.4f} = {:6.4f} + {:6.4f} + {:6.4f} '.format(step, train_epoch_step, loss.detach().item(), ce_loss.detach().item(), swap_loss.detach().item(), law_loss.detach().item()), flush=True)
@@ -139,10 +139,8 @@ def train(Config,
                 val_acc1, val_acc2, val_acc3 = eval_turn(Config, model, data_loader['val'], 'val', epoch, log_file)
 
                 save_path = os.path.join(save_dir, 'weights_%d_%d_%.4f_%.4f.pth'%(epoch, batch_cnt, val_acc1, val_acc3))
-                torch.cuda.synchronize()
                 torch.save(model.state_dict(), save_path)
                 print('saved model to %s' % (save_path), flush=True)
-                torch.cuda.empty_cache()
 
             # save only
             elif step % savepoint == 0:
@@ -155,7 +153,6 @@ def train(Config,
                     os.remove(checkpoint_list[0])
                     del checkpoint_list[0]
                 torch.save(model.state_dict(), save_path)
-                torch.cuda.empty_cache()
 
 
     log_file.close()

@@ -39,8 +39,8 @@ def eval_turn(Config, model, data_loader, val_version, epoch_num, log_file):
     print('evaluating %s ...'%val_version, flush=True)
     with torch.no_grad():
         for batch_cnt_val, data_val in enumerate(data_loader):
-            inputs = Variable(data_val[0].cuda())
-            labels = Variable(torch.from_numpy(np.array(data_val[1])).long().cuda())
+            inputs = Variable(data_val[0])
+            labels = Variable(torch.from_numpy(np.array(data_val[1])).long())
             outputs = model(inputs)
             loss = 0
 
